@@ -1,0 +1,10 @@
+# Go build artifacts
+example-fan-out-fan-in-go
+*.test
+*.out
+
+# IDE/editor
+.idea/
+.vscode/
+*.swp
+.DS_Store
