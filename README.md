@@ -6,6 +6,12 @@
   </picture>
 </p>
 
+<p align="center">
+  <a href="https://resonatehq.github.io/examples-ci/">
+    <img src="https://img.shields.io/endpoint?url=https://resonatehq.github.io/examples-ci/status/example-fan-out-fan-in-go.json" alt="examples-ci status">
+  </a>
+</p>
+
 # Fan-out / Fan-in | Resonate Go SDK
 
 Dispatch one message to N parallel notification channels and await every delivery. Each child invocation is a durable promise, so a worker crash mid-delivery doesn't lose work — restarting picks up at the unresolved children.
