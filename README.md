@@ -95,11 +95,27 @@ Flags:
 |------------|--------------------------------|----------------------------------|
 | `-channels`| `email,sms,slack,push`         | comma-separated channel names    |
 | `-message` | `"Hello from Resonate"`        | message to deliver               |
+| `-id`      | `fanout-1`                     | promise ID for the root workflow |
+
+### Idempotency demo
+
+The `-id` flag defaults to a fixed value (`fanout-1`). Run the program twice without changing the ID:
+
+```sh
+go run .        # executes the workflow, prints delivery results
+go run .        # same ID → promise already resolved; returns the cached result instantly
+```
+
+The second run skips all the child dispatches and returns the stored result. Change `-id` to start a fresh execution:
+
+```sh
+go run . -id=fanout-2
+```
 
 ## What to look for
 
 ```
-[fanout] starting workflow id=fanout-... channels=[email sms slack push]
+[fanout] starting workflow id=fanout-1 channels=[email sms slack push]
   [send] push     <- "Hello from Resonate"
   [send] email    <- "Hello from Resonate"
   [send] slack    <- "Hello from Resonate"
@@ -113,7 +129,7 @@ Flags:
 
 The `[send]` log lines arrive in non-deterministic order — that's the concurrency. The final aggregation respects the input channel order.
 
-On the Resonate dashboard at <http://localhost:8001> you'll see one root promise (`fanout-...`) and one child promise per channel.
+On the Resonate dashboard at <http://localhost:8001> you'll see one root promise (`fanout-1`) and one child promise per channel.
 
 ## File structure
 
@@ -132,6 +148,7 @@ example-fan-out-fan-in-go/
 - [Durable promises](https://docs.resonatehq.io/concepts/durable-promises) — what each child promise tracks across worker lifetimes.
 - [Get started](https://docs.resonatehq.io/get-started) — install paths + first-program walkthrough.
 - [`example-recursive-factorial-go`](https://github.com/resonatehq-examples/example-recursive-factorial-go) — nested fan-out, with workers + clients in separate processes.
+- **Coming from Temporal?** See [MIGRATING-FROM-TEMPORAL.md](MIGRATING-FROM-TEMPORAL.md) — a side-by-side port of the matching `temporalio/samples-go` example.
 
 ## Community
 
