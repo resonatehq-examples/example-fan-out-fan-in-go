@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
 	resonate "github.com/resonatehq/resonate-sdk-go"
 )
@@ -74,6 +73,7 @@ func send(_ *resonate.Context, args SendArgs) (Delivery, error) {
 func main() {
 	channels := flag.String("channels", "email,sms,slack,push", "comma-separated channel names")
 	message := flag.String("message", "Hello from Resonate", "message to deliver")
+	id := flag.String("id", "fanout-1", "promise ID; rerun with the same ID to get the cached result (idempotency demo)")
 	flag.Parse()
 
 	chs := strings.Split(*channels, ",")
@@ -96,11 +96,10 @@ func main() {
 	}
 
 	ctx := context.Background()
-	id := fmt.Sprintf("fanout-%d", time.Now().UnixNano())
 	args := FanoutArgs{Channels: chs, Message: *message}
 
-	fmt.Printf("[fanout] starting workflow id=%s channels=%v\n", id, args.Channels)
-	h, err := fanoutFn.Run(ctx, id, args)
+	fmt.Printf("[fanout] starting workflow id=%s channels=%v\n", *id, args.Channels)
+	h, err := fanoutFn.Run(ctx, *id, args)
 	if err != nil {
 		log.Fatalf("Run: %v", err)
 	}
